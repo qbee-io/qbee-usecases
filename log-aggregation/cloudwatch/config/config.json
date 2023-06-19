@@ -1,0 +1,29 @@
+{
+  "enabled": true,
+  "version": "v1",
+  "items": [
+    {
+      "package": "/cloudwatch/amazon-cloudwatch-agent_1.247359.1b252618-1_amd64.deb",
+      "config_files": [
+        {
+          "config_template": "/cloudwatch/amazon-cloudwatch-agent.json",
+          "config_location": "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
+        },
+        {
+          "config_template": "/cloudwatch/common-config.toml",
+          "config_location": "/opt/aws/amazon-cloudwatch-agent/etc/common-config.toml"
+        },
+        {
+          "config_template": "/cloudwatch/credentials",
+          "config_location": "/opt/aws/amazon-cloudwatch-agent/etc/credentials"
+        }
+      ],
+      "parameters": [
+        {
+          "key": "dummy_key",
+          "value": "dummy_value"
+        }
+      ]
+    }
+  ]
+}
