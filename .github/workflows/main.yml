@@ -67,9 +67,9 @@ jobs:
         with:
           api_host: www.app.qbee-dev.qbee.io
           token: ${{ steps.qbee-auth.outputs.token }}
-          filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
-          qbee_directory: '/test'
-          local_directory: '.'
+          filename: 'Dockerfile'
+          qbee_directory: '.'
+          local_directory: 'ci-cd/docker'
 
 #      - name: qbee.io software management
 #        uses: qbee-io/software-management-action@v0.4
