@@ -56,7 +56,7 @@ jobs:
 
       - name: qbee.io authentication
         id: qbee-auth
-        uses: qbee-io/authenticate-action@v1
+        uses: qbee-io/authenticate-action@main
         with:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
