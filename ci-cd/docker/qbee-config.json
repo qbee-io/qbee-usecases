@@ -1,0 +1,20 @@
+{
+  "enabled": true,
+  "version": "v1",
+  "items": [
+    {
+      "name": "my-test-app",
+      "image": "nginx:$IMAGE_TAG",
+      "docker_args": "-p 8080:80",
+      "env_file": "",
+      "command": ""
+    }
+  ],
+  "registry_auths": [
+    {
+      "server": "asdfsdf",
+      "username": "asdf",
+      "password": "asdfds"
+    }
+  ]
+}
