@@ -63,21 +63,13 @@ jobs:
           api_host: www.app.qbee-dev.qbee.io
 
       - name: qbee.io file upload deb package
-        uses: qbee-io/file-upload-action@v1.2
+        uses: qbee-io/file-upload-action@main
         with:
           api_host: www.app.qbee-dev.qbee.io
           token: ${{ steps.qbee-auth.outputs.token }}
           filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
           qbee_directory: '/test'
           local_directory: '.'
-
-      - name: qbee.io file upload deb package
-        uses: qbee-io/file-upload-action@v1.2
-        with:
-          token: ${{ steps.qbee-auth.outputs.token }}
-          filename: qbee-ci-cd-config.yml.template
-          qbee_directory: '/test'
-          local_directory: 'files/config'
 
 #      - name: qbee.io software management
 #        uses: qbee-io/software-management-action@v0.4
