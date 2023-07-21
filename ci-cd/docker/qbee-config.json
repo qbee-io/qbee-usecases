@@ -5,7 +5,7 @@
     {
       "name": "my-test-app",
       "image": "nginx:latest",
-      "docker_args": "-p 8080:80",
+      "docker_args": "-p 8080:80 -e MY_VAR_1=MY_VALUE_1",
       "env_file": "",
       "command": ""
     }
