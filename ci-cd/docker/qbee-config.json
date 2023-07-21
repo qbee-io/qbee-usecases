@@ -11,10 +11,5 @@
     }
   ],
   "registry_auths": [
-    {
-      "server": "asdfsdf",
-      "username": "asdf",
-      "password": "asdfds"
-    }
   ]
 }
