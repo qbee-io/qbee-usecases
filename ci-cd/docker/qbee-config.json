@@ -4,12 +4,17 @@
   "items": [
     {
       "name": "my-test-app",
-      "image": "nginx:latest",
+      "image": "$DOCKER_IMAGE",
       "docker_args": "-p 8080:80 -e MY_VAR_1=MY_VALUE_1",
       "env_file": "",
       "command": ""
     }
   ],
   "registry_auths": [
+    {
+      "server": "cloud.canister.io:5000",
+      "username": "$REGISTRY_USERNAME",
+      "password": "$REGISTRY_PASSWORD"
+    }
   ]
 }

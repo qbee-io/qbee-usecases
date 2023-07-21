@@ -93,7 +93,11 @@ jobs:
       - name: qbee.io config upload
         id: qbee-io-config-upload
         run: |
-          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config.json)
+          export DOCKER_IMAGE="cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.outputs.REPO_TAG }}"
+          export REGISTRY_USERNAME="${{ secrets.REGISTRY_USERNAME }}"
+          export REGISTRY_PASSWORD="${{ secrets.REGISTRY_TOKEN }}"
+          envsubst < ci-cd/docker/qbee-config.json > ci-cd/docker/qbee-config-expanded.json
+          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config-expanded.json)
           curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
             -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change \
             -d "${payload}"
