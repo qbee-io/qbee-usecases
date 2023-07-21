@@ -40,7 +40,7 @@ jobs:
           REPO_TAG="0.0.$(date +%s)"
           DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_DEV }}"
           if [[ ${{ github.ref_type }} == "tag" ]]; then
-            PKG_VERSION=$(git describe --abbrev=0 --tags)
+            REPO_TAG=$(git describe --abbrev=0 --tags)
             # Deploy to prod on tag
             DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_PROD }}"
           fi
@@ -50,6 +50,7 @@ jobs:
           
           echo "PKG_VERSION=$PKG_VERSION" >> $GITHUB_OUTPUT
           echo "REPO_NAME=$PKG_NAME" >> $GITHUB_OUTPUT
+          echo "REPO_TAG=$REPO_TAG" >> $GITHUB_OUTPUT
           echo "PKG_ARCH=$PKG_ARCH" >> $GITHUB_OUTPUT
           echo "DEPLOYMENT_GROUP=$DEPLOYMENT_GROUP" >> $GITHUB_OUTPUT
           
