@@ -70,6 +70,7 @@ jobs:
           context: ci-cd/docker
           push: true
           file: ci-cd/docker/Dockerfile
+          provenance: false
           tags: cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.outputs.REPO_TAG }}
 
       - name: qbee.io authentication
