@@ -79,7 +79,7 @@ jobs:
             -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change \
             -d "${payload}"
           
-          curl -s -X GET --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
+          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
             -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/commit \
             -d '{"action":"commit","message":"Commit front GHA"}'
 
