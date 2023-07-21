@@ -75,7 +75,7 @@ jobs:
         id: qbee-io-config-upload
         run: |
           payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config.json)
-          
+          echo ''${payload}''
           curl -X POST -d@ci-cd/docker/qbee-config.json --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
             -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change -d ''${payload}'' 
 
