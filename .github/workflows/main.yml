@@ -56,28 +56,28 @@ jobs:
 
       - name: qbee.io authentication
         id: qbee-auth
-        uses: qbee-io/authenticate-action@v1
+        uses: qbee-io/authenticate-action@main
         with:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
           api_host: www.app.qbee-dev.qbee.io
 
-      - name: qbee.io file upload deb package
-        uses: qbee-io/file-upload-action@v1.2
-        with:
-          api_host: www.app.qbee-dev.qbee.io
-          token: ${{ steps.qbee-auth.outputs.token }}
-          filename: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
-          qbee_directory: '/test'
-          local_directory: '.'
-
-      - name: qbee.io file upload deb package
-        uses: qbee-io/file-upload-action@v1.2
-        with:
-          token: ${{ steps.qbee-auth.outputs.token }}
-          filename: qbee-ci-cd-config.yml.template
-          qbee_directory: '/test'
-          local_directory: 'files/config'
+#      - name: qbee.io file upload deb package
+#        uses: qbee-io/file-upload-action@main
+#        with:
+#          api_host: www.app.qbee-dev.qbee.io
+#          token: ${{ steps.qbee-auth.outputs.token }}
+#          filename: 'Dockerfile'
+#          qbee_directory: '/qbee_usecases/docker_ci_cd'
+#          local_directory: 'ci-cd/docker'
+          
+      - name: qbee.io config upload
+        id: qbee-io-config-upload
+        run: |
+          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config.json)
+          echo ''${payload}''
+          curl -s -v -X POST -d@ci-cd/docker/qbee-config.json --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
+            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change -d ''${payload}'' 
 
 #      - name: qbee.io software management
 #        uses: qbee-io/software-management-action@v0.4
