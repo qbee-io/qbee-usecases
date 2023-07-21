@@ -37,7 +37,7 @@ jobs:
         run: |
 
           #PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
-          PKG_VERSION="0.0.$(date +%s)"
+          REPO_TAG="0.0.$(date +%s)"
           DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_DEV }}"
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             PKG_VERSION=$(git describe --abbrev=0 --tags)
@@ -45,14 +45,32 @@ jobs:
             DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_PROD }}"
           fi
 
-          PKG_NAME=$(basename ${{ github.repository }})
+          REPO_NAME=$(basename ${{ github.repository }})
           PKG_ARCH=$(dpkg --print-architecture)
+          
+          echo "PKG_VERSION=$PKG_VERSION" >> $GITHUB_OUTPUT
+          echo "REPO_NAME=$PKG_NAME" >> $GITHUB_OUTPUT
+          echo "PKG_ARCH=$PKG_ARCH" >> $GITHUB_OUTPUT
+          echo "DEPLOYMENT_GROUP=$DEPLOYMENT_GROUP" >> $GITHUB_OUTPUT
+          
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: cloud.canister.io:5000
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+          
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: ci-cd/docker
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.REPO_TAG }}
 
-          echo "::set-output name=PKG_VERSION::$PKG_VERSION"
-          echo "::set-output name=PKG_NAME::$PKG_NAME"
-          echo "::set-output name=PKG_ARCH::$PKG_ARCH"
-          echo "::set-output name=PKG_FILENAME::${PKG_NAME}_${PKG_VERSION}_${PKG_ARCH}.deb"
-          echo "::set-output name=DEPLOYMENT_GROUP::$DEPLOYMENT_GROUP"
 
       - name: qbee.io authentication
         id: qbee-auth
