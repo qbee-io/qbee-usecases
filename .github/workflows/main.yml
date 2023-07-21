@@ -70,6 +70,13 @@ jobs:
           filename: 'Dockerfile'
           qbee_directory: '/qbee_usecases/docker_ci_cd'
           local_directory: 'ci-cd/docker'
+      - name: qbee.io config upload
+        id: qbee-io-config-upload
+        run: |
+          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}')
+          
+          curl -X POST -d@ci-cd/docker/qbee-config.json --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
+            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change -d ''$payload'' 
 
 #      - name: qbee.io software management
 #        uses: qbee-io/software-management-action@v0.4
