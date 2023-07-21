@@ -4,7 +4,7 @@
   "items": [
     {
       "name": "my-test-app",
-      "image": "nginx:$IMAGE_TAG",
+      "image": "nginx:latest",
       "docker_args": "-p 8080:80",
       "env_file": "",
       "command": ""
