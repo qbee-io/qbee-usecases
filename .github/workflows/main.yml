@@ -70,7 +70,7 @@ jobs:
           context: ci-cd/docker
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.REPO_TAG }}
+          tags: ${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.outputs.REPO_TAG }}
 
 
       - name: qbee.io authentication
