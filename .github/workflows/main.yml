@@ -72,7 +72,6 @@ jobs:
           file: ci-cd/docker/Dockerfile
           tags: cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.outputs.REPO_TAG }}
 
-
       - name: qbee.io authentication
         id: qbee-auth
         uses: qbee-io/authenticate-action@main
