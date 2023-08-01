@@ -85,14 +85,14 @@ jobs:
           export DOCKER_IMAGE="cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-build-details.outputs.REPO_TAG }}"
           export REGISTRY_USERNAME="${{ secrets.REGISTRY_USERNAME }}"
           export REGISTRY_PASSWORD="${{ secrets.REGISTRY_TOKEN }}"
-          envsubst < ci-cd/docker/qbee-config.json > ci-cd/docker/qbee-config-expanded.json
+          envsubst < ci-cd/docker/qbee-config.json.template > ci-cd/docker/qbee-config.json
 
       - name: qbee.io config upload and commit
         id: qbee-io-config-upload
         uses: qbee-io/config-apply-action@main
         with:
           token: ${{ steps.qbee-auth.outputs.token }}
-          file_path: ci-cd/docker/qbee-config-expanded.json
+          file_path: ci-cd/docker/qbee-config.json
           node_id: ${{ steps.resolve-build-details.outputs.DEPLOYMENT_GROUP }}
           form_type: docker_containers
           api_host: www.app.qbee-dev.qbee.io
