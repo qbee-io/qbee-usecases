@@ -97,14 +97,26 @@ jobs:
           export REGISTRY_USERNAME="${{ secrets.REGISTRY_USERNAME }}"
           export REGISTRY_PASSWORD="${{ secrets.REGISTRY_TOKEN }}"
           envsubst < ci-cd/docker/qbee-config.json > ci-cd/docker/qbee-config-expanded.json
-          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config-expanded.json)
-          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
-            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change \
-            -d "${payload}"
-          
-          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
-            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/commit \
-            -d '{"action":"commit","message":"Commit front GHA"}'
+
+      - name: qbee.io authentication
+        id: qbee-config-upload
+        uses: qbee-io/config-apply-action@main
+        with:
+          token: ${{ steps.qbee-auth.outputs.token }}
+          file_path: ci-cd/docker/qbee-config-expanded.json
+          node_id: ${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}
+          form_type: docker_containers
+          commit_message: Commit of build ${{ steps.resolve-package-details.outputs.REPO_TAG }}
+          api_host: www.app.qbee-dev.qbee.io
+
+#          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config-expanded.json)
+#          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
+#            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change \
+#            -d "${payload}"
+#          
+#          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
+#            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/commit \
+#            -d '{"action":"commit","message":"Commit front GHA"}'
 
 #      - name: qbee.io software management
 #        uses: qbee-io/software-management-action@v0.4
