@@ -29,14 +29,16 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Resolve package details
+      # Resolve repo details and 
       - name: Resolve package details
         id: resolve-package-details
         run: |
-
-          #PKG_VERSION=$(git log -n 1 --date=format:%Y%m%d --pretty=0.0.0~git%cd.%h)
+        
+          # Default tag is based on current timestamp
           REPO_TAG="0.0.$(date +%s)"
           DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_DEV }}"
+          
+          # Use production deployment group and github tagname if this is a tag build
           if [[ ${{ github.ref_type }} == "tag" ]]; then
             REPO_TAG=$(git describe --abbrev=0 --tags)
             # Deploy to prod on tag
@@ -44,12 +46,10 @@ jobs:
           fi
 
           REPO_NAME=$(basename ${{ github.repository }})
-          PKG_ARCH=$(dpkg --print-architecture)
           
-          echo "PKG_VERSION=$PKG_VERSION" >> $GITHUB_OUTPUT
-          echo "REPO_NAME=$PKG_NAME" >> $GITHUB_OUTPUT
+          # store the values for use in subsequent steps
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
           echo "REPO_TAG=$REPO_TAG" >> $GITHUB_OUTPUT
-          echo "PKG_ARCH=$PKG_ARCH" >> $GITHUB_OUTPUT
           echo "DEPLOYMENT_GROUP=$DEPLOYMENT_GROUP" >> $GITHUB_OUTPUT
           
       - name: Login to Docker Hub
@@ -78,26 +78,17 @@ jobs:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
           api_host: www.app.qbee-dev.qbee.io
-
-#      - name: qbee.io file upload deb package
-#        uses: qbee-io/file-upload-action@main
-#        with:
-#          api_host: www.app.qbee-dev.qbee.io
-#          token: ${{ steps.qbee-auth.outputs.token }}
-#          filename: 'Dockerfile'
-#          qbee_directory: '/qbee_usecases/docker_ci_cd'
-#          local_directory: 'ci-cd/docker'
-          
-      - name: qbee.io config upload
-        id: qbee-io-config-upload
+        
+      - name: qbee.io config expand
+        id: qbee-io-config-expand
         run: |
           export DOCKER_IMAGE="cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-package-details.outputs.REPO_TAG }}"
           export REGISTRY_USERNAME="${{ secrets.REGISTRY_USERNAME }}"
           export REGISTRY_PASSWORD="${{ secrets.REGISTRY_TOKEN }}"
           envsubst < ci-cd/docker/qbee-config.json > ci-cd/docker/qbee-config-expanded.json
 
-      - name: qbee.io authentication
-        id: qbee-config-upload
+      - name: qbee.io config upload and commit
+        id: qbee-io-config-upload
         uses: qbee-io/config-apply-action@main
         with:
           token: ${{ steps.qbee-auth.outputs.token }}
@@ -106,22 +97,3 @@ jobs:
           form_type: docker_containers
           commit_message: Commit of build ${{ steps.resolve-package-details.outputs.REPO_TAG }}
           api_host: www.app.qbee-dev.qbee.io
-
-#          payload=$(jq -rc --arg node_id "${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}" --arg formtype "docker_containers" '{"node_id":$node_id,"formtype":$formtype,"config":.}' < ci-cd/docker/qbee-config-expanded.json)
-#          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
-#            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/change \
-#            -d "${payload}"
-#          
-#          curl -s -X POST --header "Authorization: Bearer ${{ steps.qbee-auth.outputs.token }}" \
-#            -H "Content-type: application/json" --url https://www.app.qbee-dev.qbee.io/api/v2/commit \
-#            -d '{"action":"commit","message":"Commit front GHA"}'
-
-#      - name: qbee.io software management
-#        uses: qbee-io/software-management-action@v0.4
-#        with:
-#         token: ${{ steps.qbee-auth.outputs.token }}
-#         config_file: 'qbee/software_management.json'
-#         package_name: ${{ steps.resolve-package-details.outputs.PKG_FILENAME }}
-#         mode: 'replace'
-#         device_or_group_id: ${{ steps.resolve-package-details.outputs.DEPLOYMENT_GROUP }}
-#         commit_message: 'uploading content from GitHub'
