@@ -55,7 +55,6 @@ jobs:
       - name: Login to Docker registry
         uses: docker/login-action@v2
         with:
-          registry: cloud.canister.io:5000
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_TOKEN }}
           
@@ -69,7 +68,7 @@ jobs:
           push: true
           file: ci-cd/docker/Dockerfile
           provenance: false
-          tags: cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-build-details.outputs.REPO_TAG }}
+          tags: ${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-build-details.outputs.REPO_TAG }}
 
       - name: qbee.io authentication
         id: qbee-auth
@@ -81,7 +80,7 @@ jobs:
       - name: qbee.io config expand
         id: qbee-io-config-expand
         run: |
-          export DOCKER_IMAGE="cloud.canister.io:5000/${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-build-details.outputs.REPO_TAG }}"
+          export DOCKER_IMAGE="${{ secrets.REGISTRY_USERNAME }}/qbee-ci-cd-docker:${{ steps.resolve-build-details.outputs.REPO_TAG }}"
           export REGISTRY_USERNAME="${{ secrets.REGISTRY_USERNAME }}"
           export REGISTRY_PASSWORD="${{ secrets.REGISTRY_TOKEN }}"
           envsubst < ci-cd/docker/qbee-config.json.template > ci-cd/docker/qbee-config.json

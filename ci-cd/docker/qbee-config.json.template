@@ -12,7 +12,6 @@
   ],
   "registry_auths": [
     {
-      "server": "cloud.canister.io:5000",
       "username": "$REGISTRY_USERNAME",
       "password": "$REGISTRY_PASSWORD"
     }
