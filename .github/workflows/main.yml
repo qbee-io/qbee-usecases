@@ -35,7 +35,7 @@ jobs:
         run: |
         
           # Default tag is based on current timestamp
-          REPO_TAG="0.0.$(date +%s)"
+          REPO_TAG=$(git rev-parse --short HEAD)
           DEPLOYMENT_GROUP="${{ secrets.QBEE_GROUP_ID_DEV }}"
           
           # Use production deployment group and github tagname if this is a tag build
