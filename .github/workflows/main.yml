@@ -77,7 +77,6 @@ jobs:
         with:
           login: ${{ secrets.QBEE_USER }}
           password: ${{ secrets.QBEE_PW }}
-          api_host: www.app.qbee-dev.qbee.io
         
       - name: qbee.io config expand
         id: qbee-io-config-expand
@@ -95,4 +94,3 @@ jobs:
           file_path: ci-cd/docker/qbee-config.json
           node_id: ${{ steps.resolve-build-details.outputs.DEPLOYMENT_GROUP }}
           form_type: docker_containers
-          api_host: www.app.qbee-dev.qbee.io
