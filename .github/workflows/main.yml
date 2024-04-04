@@ -52,6 +52,11 @@ jobs:
           echo "REPO_TAG=$REPO_TAG" >> $GITHUB_OUTPUT
           echo "DEPLOYMENT_GROUP=$DEPLOYMENT_GROUP" >> $GITHUB_OUTPUT
           
+      - name: Expand app version
+        id: expand-app-version
+        run: |
+          echo "App version: {{steps.resolve-build-details.outputs.REPO_TAG}}" >> ci-cd/docker/src/index.html
+          
       - name: Login to Docker registry
         uses: docker/login-action@v2
         with:
