@@ -19,6 +19,10 @@ jobs:
       matrix:
         branch: [kirkstone]
         arch: [x86-64]
+    env:
+      name: build-and-test
+      ARCH: ${{ matrix.arch }}
+      BRANCH: ${{ matrix.branch }}
     steps:
       - uses: actions/checkout@v3
         with:
