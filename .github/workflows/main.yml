@@ -7,7 +7,6 @@ on:
       - '*'
   pull_request:
     branches: [ci-cd-rauc]
-  workflow_dispatch:
 
 jobs:
   build:
