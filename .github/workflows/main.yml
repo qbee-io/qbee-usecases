@@ -1,18 +1,17 @@
+---
 name: CI
-
 on:
   push:
-    branches: [ ci-cd-rauc ]
+    branches: [ci-cd-rauc]
     tags:
       - '*'
   pull_request:
-    branches: [ ci-cd-rauc ]
+    branches: [ci-cd-rauc]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: [ self-hosted, Linux, X64 ]
-
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -21,4 +20,4 @@ jobs:
       - name: Run a command
         id: run-command
         run: |
-          echo "Hello world" 
+          echo "Hello world"
