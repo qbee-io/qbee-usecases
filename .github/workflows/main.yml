@@ -11,12 +11,53 @@ on:
 jobs:
   build:
     runs-on: [self-hosted, Linux, X64]
+    timeout-minutes: 600
+    container:
+      image: dynamicdevices/yocto-ci-build:latest
+      options: --privileged --platform linux/amd64  -v /dev/net/tun:/dev/net/tun -v /dev/kvm:/dev/kvm
+    strategy:
+      matrix:
+        branch: [kirkstone]
+        arch: [x86-64]
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Run a command
-        id: run-command
+      - name: Update repo poky
         run: |
-          echo "Hello world"
+          if [ ! -d ${BRANCH}/poky ]; then
+            git clone git://git.yoctoproject.org/poky -b ${BRANCH} ${BRANCH}/poky
+          else
+            cd ${BRANCH}/poky
+            git pull origin ${BRANCH}
+            cd ../..
+          fi
+      - name: Update repo meta-openembedded
+        run: |
+          if [ ! -d ${BRANCH}/meta-openembedded ]; then
+            git clone https://github.com/openembedded/meta-openembedded.git -b ${BRANCH} ${BRANCH}/meta-openembedded
+          else
+            cd ${BRANCH}/meta-openembedded
+            git pull origin ${BRANCH}
+            cd ../..
+          fi
+      - name: Configuring
+        run: |
+          rm -f ${BRANCH}/build/conf/local.conf
+          rm -f ${BRANCH}/build/conf/bblayers.conf
+          . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
+
+          # Append custom variables for regenerated local.conf and bblayers.conf samples
+          echo "### Starting to configure local.conf and bblayers.conf ###"
+          echo "mono version: $MONO_VERSION"
+          echo "dotnet version: $DOTNET_VERSION"
+
+          echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
+
+          echo "MACHINE=\"qemu${ARCH}\"" >> conf/local.conf
+          echo "SSTATE_DIR=\"$GITHUB_WORKSPACE/sstate\"" >> conf/local.conf
+          echo "TMPDIR=\"$GITHUB_WORKSPACE/sstate\"" >> conf/local.conf
+          echo "DL_DIR=\"$GITHUB_WORKSPACE/downloads\"" >> conf/local.conf
+
+          cat conf/local.conf
