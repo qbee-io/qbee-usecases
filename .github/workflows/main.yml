@@ -57,11 +57,18 @@ jobs:
           echo "mono version: $MONO_VERSION"
           echo "dotnet version: $DOTNET_VERSION"
 
-          echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-poky
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-yocto-bsp
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe
+          # bitbake-layers add-layer .$GITHUB_WORKSPACE/${BRANCH}/meta-qbee
+
+          # echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
 
           echo "MACHINE=\"qemu${ARCH}\"" >> conf/local.conf
           echo "SSTATE_DIR=\"$GITHUB_WORKSPACE/sstate\"" >> conf/local.conf
-          echo "TMPDIR=\"$GITHUB_WORKSPACE/sstate\"" >> conf/local.conf
+          echo "TMPDIR=\"$GITHUB_WORKSPACE/tmp\"" >> conf/local.conf
           echo "DL_DIR=\"$GITHUB_WORKSPACE/downloads\"" >> conf/local.conf
 
           cat conf/local.conf
+          cat conf/bblayers.conf
