@@ -46,6 +46,15 @@ jobs:
             git pull origin ${BRANCH}
             cd ../..
           fi
+      - name: Update repo meta-qbee
+        run: |
+          if [ ! -d ${BRANCH}/meta-qbee ]; then
+            git clone https://github.com/qbee-io/meta-qbee.git -b master ${BRANCH}/meta-qbee
+          else
+            cd ${BRANCH}/meta-qbee
+            git pull origin master
+            cd ../..
+          fi
       - name: Configuring
         run: |
           rm -f ${BRANCH}/build/conf/local.conf
@@ -59,9 +68,9 @@ jobs:
 
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-poky
-          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-yocto-bsp
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-yocto-bsp
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe
-          # bitbake-layers add-layer .$GITHUB_WORKSPACE/${BRANCH}/meta-qbee
+          bitbake-layers add-layer .$GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
 
           # echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
 
