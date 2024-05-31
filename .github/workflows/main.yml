@@ -70,7 +70,7 @@ jobs:
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-poky
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-yocto-bsp
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe
-          bitbake-layers add-layer .$GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
 
           # echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
 
