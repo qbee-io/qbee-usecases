@@ -26,6 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          clean: false
           fetch-depth: 0
 
       - name: Update repo poky
