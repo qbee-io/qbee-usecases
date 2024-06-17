@@ -114,7 +114,8 @@ jobs:
 
           cat conf/local.conf
           cat conf/bblayers.conf
-#      - name: Building
-#        run: |
-#          . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
-#          bitbake -k core-image-minimal
+      - name: Building
+        run: |
+          . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
+          bitbake -k core-image-minimal
+          bitbake -k qemu-demo-bundle
