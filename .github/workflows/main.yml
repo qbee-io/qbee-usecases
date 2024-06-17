@@ -112,10 +112,14 @@ jobs:
           RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
           EOF
 
-          cat conf/local.conf
-          cat conf/bblayers.conf
+#          cat conf/local.conf
+#          cat conf/bblayers.conf
       - name: Building
         run: |
           . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
           bitbake -k core-image-minimal
           bitbake -k qemu-demo-bundle
+
+          ls -l $GITHUB_WORKSPACE/tmp/deploy/images/qemux86-64
+
+
