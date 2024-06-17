@@ -49,10 +49,28 @@ jobs:
       - name: Update repo meta-qbee
         run: |
           if [ ! -d ${BRANCH}/meta-qbee ]; then
-            git clone https://github.com/qbee-io/meta-qbee.git -b master ${BRANCH}/meta-qbee
+            git clone https://github.com/qbee-io/meta-qbee.git -b ${BRANCH} ${BRANCH}/meta-qbee
           else
             cd ${BRANCH}/meta-qbee
-            git pull origin master
+            git pull origin ${BRANCH}
+            cd ../..
+          fi
+      - name: Update repo meta-rauc
+        run: |
+          if [ ! -d ${BRANCH}/meta-rauc ]; then
+            git clone https://github.com/rauc/meta-rauc.git -b ${BRANCH} ${BRANCH}/meta-rauc
+          else
+            cd ${BRANCH}/meta-rauc
+            git pull origin ${BRANCH}
+            cd ../..
+          fi
+      - name: Update repo meta-rauc-community
+        run: |
+          if [ ! -d ${BRANCH}/meta-rauc-community ]; then
+            git clone https://github.com/rauc/meta-rauc-community.git -b ${BRANCH} ${BRANCH}/meta-rauc-community
+          else
+            cd ${BRANCH}/meta-rauc-community
+            git pull origin ${BRANCH}
             cd ../..
           fi
       - name: Configuring
@@ -61,27 +79,31 @@ jobs:
           rm -f ${BRANCH}/build/conf/bblayers.conf
           . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
 
-          # Append custom variables for regenerated local.conf and bblayers.conf samples
-          echo "### Starting to configure local.conf and bblayers.conf ###"
-          echo "mono version: $MONO_VERSION"
-          echo "dotnet version: $DOTNET_VERSION"
-
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-poky
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/poky/meta-yocto-bsp
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc
 
-          # echo "BBLAYERS += '$GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe'" >> conf/bblayers.conf
-
-          echo "MACHINE=\"qemu${ARCH}\"" >> conf/local.conf
-          echo "SSTATE_DIR=\"$GITHUB_WORKSPACE/sstate\"" >> conf/local.conf
-          echo "TMPDIR=\"$GITHUB_WORKSPACE/tmp\"" >> conf/local.conf
-          echo "DL_DIR=\"$GITHUB_WORKSPACE/downloads\"" >> conf/local.conf
+          cat >> conf/local.conf << EOF
+          MACHINE="qemu${ARCH}"
+          SSTATE_DIR="$GITHUB_WORKSPACE/sstate"
+          TMPDIR="$GITHUB_WORKSPACE/tmp"
+          DL_DIR="$GITHUB_WORKSPACE/downloads"
+          DISTRO_FEATURES += "rauc"
+          MACHINE_FEATURES:append = " pcbios efi" 
+          EXTRA_IMAGEDEPENDS += "ovmf"
+          PREFERRED_RPROVIDER_virtual-grub-bootconf = "rauc-qemu-grubconf"
+          CORE_IMAGE_EXTRA_INSTALL += "rauc"
+          PACKAGECONFIG:remove:pn-rauc = "service"
+          RAUC_SLOT_rootfs[fstype] = "ext4"
+          RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
+          EOF
 
           cat conf/local.conf
           cat conf/bblayers.conf
-      - name: Building
-        run: |
-          . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
-          bitbake -k core-image-minimal
+#      - name: Building
+#        run: |
+#          . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
+#          bitbake -k core-image-minimal
