@@ -120,7 +120,7 @@ jobs:
           bitbake -k core-image-minimal
           bitbake -k qemu-demo-bundle
 
-          image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic
+          image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
           echo "Image: $image"
           echo "Bundle: $bundle"
