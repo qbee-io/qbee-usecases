@@ -74,6 +74,12 @@ jobs:
             git pull origin ${BRANCH}
             cd ../..
           fi
+      - name: Extract RAUC keys
+        run:
+          mkdir -p $GITHUB_WORKSPACE/rauc-ca
+          echo "${{ secrets.RAUC_CA_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/ca.cert
+          echo "${{ secrets.RAUC_DEV_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/dev.cert
+          echo "${{ secrets.RAUC_DEV_KEY_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/dev.key
       - name: Configuring
         run: |
           rm -f ${BRANCH}/build/conf/local.conf
@@ -86,6 +92,7 @@ jobs:
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-openembedded/meta-oe
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc
+          bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc-community/meta-rauc-qemux86
 
           cat >> conf/local.conf << EOF
           MACHINE="qemu${ARCH}"
@@ -100,6 +107,9 @@ jobs:
           PACKAGECONFIG:remove:pn-rauc = "service"
           RAUC_SLOT_rootfs[fstype] = "ext4"
           RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
+          RAUC_KEYRING_FILE="$GITHUB_WORKSPACE/rauc-ca/ca.cert"
+          RAUC_KEY_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
+          RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.key"
           EOF
 
           cat conf/local.conf
