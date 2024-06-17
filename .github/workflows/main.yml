@@ -108,8 +108,8 @@ jobs:
           RAUC_SLOT_rootfs[fstype] = "ext4"
           RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
           RAUC_KEYRING_FILE="$GITHUB_WORKSPACE/rauc-ca/ca.cert"
-          RAUC_KEY_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
-          RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.key"
+          RAUC_KEY_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.key"
+          RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
           EOF
 
           cat conf/local.conf
