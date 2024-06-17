@@ -75,7 +75,7 @@ jobs:
             cd ../..
           fi
       - name: Extract RAUC keys
-        run:
+        run: |
           mkdir -p $GITHUB_WORKSPACE/rauc-ca
           echo "${{ secrets.RAUC_CA_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/ca.cert
           echo "${{ secrets.RAUC_DEV_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/dev.cert
