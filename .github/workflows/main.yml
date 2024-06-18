@@ -123,8 +123,8 @@ jobs:
 
           image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
-          echo "image=$GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
-          echo "bundle=$GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
+          echo "image=tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
+          echo "bundle=tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
 
       - name: Autenticate with qbee.io
         uses: qbee-io/authenticate-action@v2
