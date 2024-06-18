@@ -123,9 +123,18 @@ jobs:
 
           image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
-          echo "image=$image" >> "$GITHUB_OUTPUT"
-          echo "bundle=$bundle" >> "$GITHUB_OUTPUT"
-      - name: Upload artifacts to qbee.io
-        run: |
-          echo "${{ steps.build.outputs.image }}"
+          echo "image=$GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
+          echo "bundle=$GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
 
+      - name: Autenticate with qbee.io
+        uses: qbee-io/authenticate-action@v2
+        with:
+          login: "${{ secrets.QBEE_USER_RAUC }}"
+          password: "${{ secrets.QBEE_PASSWORD_RAUC }}"
+          api_host: "${{ secrets.QBEE_API_HOST }}"
+  
+      - name: Upload artifacts to qbee.io
+        uses: qbee-io/file-upload-action@v2
+        with:
+          source: ${{ steps.build.outputs.image }}
+          destination: ci-cd-rauc
