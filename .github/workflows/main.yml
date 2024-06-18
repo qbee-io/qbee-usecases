@@ -125,7 +125,7 @@ jobs:
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
           echo "rauc_image=tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
           echo "rauc_bundle=tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
-          echo "rauc_bundle_filename=$bundle"
+          echo "rauc_bundle_filename=$bundle" >> "$GITHUB_OUTPUT"
 
       - name: Autenticate with qbee.io
         uses: qbee-io/authenticate-action@v2
