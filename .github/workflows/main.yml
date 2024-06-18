@@ -115,6 +115,7 @@ jobs:
 #          cat conf/local.conf
 #          cat conf/bblayers.conf
       - name: Building
+        id: build
         run: |
           . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
           bitbake -k core-image-minimal
@@ -122,6 +123,9 @@ jobs:
 
           image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
-          echo "Image: $image"
-          echo "Bundle: $bundle"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "bundle=$bundle" >> "$GITHUB_OUTPUT"
+      - name: Upload artifacts to qbee.io
+        run: |
+          echo "${{ steps.build.outputs.image }}"
 
