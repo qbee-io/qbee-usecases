@@ -125,6 +125,7 @@ jobs:
           bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
           echo "rauc_image=tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
           echo "rauc_bundle=tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
+          echo "rauc_bundle_filename=$bundle"
 
       - name: Autenticate with qbee.io
         uses: qbee-io/authenticate-action@v2
@@ -138,3 +139,12 @@ jobs:
         with:
           source: ${{ steps.build.outputs.rauc_bundle }}
           destination: /ci-cd-rauc
+
+      - name: Upload and commit qbee.io configuration
+        uses: qbee-io/config-apply-action@v2
+        with:
+          file_path: ci-cd/rauc/rauc-config-template.json
+          form_type: rauc
+          node_id: ${{ secrets.QBEE_RAUC_NODE_ID }}
+          commit_message: ${{ github.event.head_commit.message}}
+          template_params: rauc_bundle=/ci-cd-rauc/${{ steps.build.outputs.rauc_bundle_filename }}
