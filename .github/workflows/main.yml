@@ -74,6 +74,8 @@ jobs:
             git pull origin ${BRANCH}
             cd ../..
           fi
+          # custom wks file
+          cp ci-cd/rauc/qemux86-grub-efi.wks ${BRANCH}/meta-rauc-community/meta-rauc-qemux86/wic/qemux86-grub-efi.wks
       - name: Extract RAUC keys
         run: |
           mkdir -p $GITHUB_WORKSPACE/rauc-ca
