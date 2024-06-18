@@ -137,4 +137,4 @@ jobs:
         uses: qbee-io/file-upload-action@v2
         with:
           source: ${{ steps.build.outputs.image }}
-          destination: ci-cd-rauc
+          destination: /ci-cd-rauc
