@@ -95,6 +95,8 @@ jobs:
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc-community/meta-rauc-qemux86
 
           cat >> conf/local.conf << EOF
+          CONF_VERSION = "2"
+          INIT_MANAGER = "systemd"
           MACHINE="qemu${ARCH}"
           SSTATE_DIR="$GITHUB_WORKSPACE/sstate"
           TMPDIR="$GITHUB_WORKSPACE/tmp"
