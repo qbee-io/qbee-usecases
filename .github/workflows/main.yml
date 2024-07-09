@@ -95,6 +95,8 @@ jobs:
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}/meta-qbee/meta-qbee
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc-community/meta-rauc-qemux86
+          bitbake-layers add-layer $GITHUB_WORKSPACE/ci-cd/rauc/meta-mylayer
+
 
           cat >> conf/local.conf << EOF
           CONF_VERSION = "2"
@@ -107,7 +109,7 @@ jobs:
           MACHINE_FEATURES:append = " pcbios efi" 
           EXTRA_IMAGEDEPENDS += "ovmf"
           PREFERRED_RPROVIDER_virtual-grub-bootconf = "rauc-qemu-grubconf"
-          CORE_IMAGE_EXTRA_INSTALL += "rauc"
+          CORE_IMAGE_EXTRA_INSTALL += "rauc myapp"
           PACKAGECONFIG:remove:pn-rauc = "service"
           RAUC_SLOT_rootfs[fstype] = "ext4"
           RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
