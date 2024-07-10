@@ -1,6 +1,6 @@
 DESCRIPTION = "Hello World C file recipe"
 SECTION = "base"
-LICENSE = "GPLv2"
+LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYRIGHT;md5=0edab6e76e7da7f1573a394999c7fe8f"
 
 PR = "r0"
