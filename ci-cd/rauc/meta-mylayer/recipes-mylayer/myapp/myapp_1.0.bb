@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYRIGHT;md5=0edab6e76e7da7f1573a394999c7
 PR = "r0"
 
 SRC_URI = "file://hello.c \
-          file://COPYRIGHT \ "
+          file://COPYRIGHT"
 
 do_compile () {
          ${CC} ${WORKDIR}/hello.c -o ${WORKDIR}/hello
