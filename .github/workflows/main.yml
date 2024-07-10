@@ -109,13 +109,14 @@ jobs:
           MACHINE_FEATURES:append = " pcbios efi" 
           EXTRA_IMAGEDEPENDS += "ovmf"
           PREFERRED_RPROVIDER_virtual-grub-bootconf = "rauc-qemu-grubconf"
-          CORE_IMAGE_EXTRA_INSTALL += "rauc myapp"
+          CORE_IMAGE_EXTRA_INSTALL += "rauc"
           PACKAGECONFIG:remove:pn-rauc = "service"
           RAUC_SLOT_rootfs[fstype] = "ext4"
           RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
           RAUC_KEYRING_FILE="$GITHUB_WORKSPACE/rauc-ca/ca.cert.pem"
           RAUC_KEY_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.key"
           RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
+          IMAGE_INSTALL:append = " myapp"
           EOF
 
 #          cat conf/local.conf
