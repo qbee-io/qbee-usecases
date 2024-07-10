@@ -4,6 +4,7 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/COPYRIGHT;md5=0edab6e76e7da7f1573a394999c7fe8f"
 
 PR = "r0"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
 SRC_URI = "file://hello.c \
           file://COPYRIGHT"
