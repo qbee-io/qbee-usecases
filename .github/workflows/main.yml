@@ -87,8 +87,8 @@ jobs:
       - name: Configuring
         run: |
 
-          DEBIAN_FRONTEND=noninteractive apt-get install -y gettext-base
-          
+          DEBIAN_FRONTEND=noninteractive sudo -E apt-get install -y gettext-base
+
           rm -f ${BRANCH}/build/conf/local.conf
           rm -f ${BRANCH}/build/conf/bblayers.conf
           . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
