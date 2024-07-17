@@ -76,12 +76,14 @@ jobs:
           fi
           # custom wks file
           cp ci-cd/rauc/qemux86-grub-efi.wks ${BRANCH}/meta-rauc-community/meta-rauc-qemux86/wic/qemux86-grub-efi.wks
+      
       - name: Extract RAUC keys
         run: |
           mkdir -p $GITHUB_WORKSPACE/rauc-ca
           echo "${{ secrets.RAUC_CA_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/ca.cert.pem
           echo "${{ secrets.RAUC_DEV_CERT_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/dev.cert
           echo "${{ secrets.RAUC_DEV_KEY_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/rauc-ca/dev.key
+      
       - name: Configuring
         run: |
           rm -f ${BRANCH}/build/conf/local.conf
@@ -97,30 +99,8 @@ jobs:
           bitbake-layers add-layer $GITHUB_WORKSPACE/${BRANCH}//meta-rauc-community/meta-rauc-qemux86
           bitbake-layers add-layer $GITHUB_WORKSPACE/ci-cd/rauc/meta-mylayer
 
+          envsubst < $GITHUB_WORKSPACE/ci-cd/rauc/local.conf.template > conf/local.conf
 
-          cat >> conf/local.conf << EOF
-          CONF_VERSION = "2"
-          INIT_MANAGER = "systemd"
-          MACHINE="qemu${ARCH}"
-          SSTATE_DIR="$GITHUB_WORKSPACE/sstate"
-          TMPDIR="$GITHUB_WORKSPACE/tmp"
-          DL_DIR="$GITHUB_WORKSPACE/downloads"
-          DISTRO_FEATURES += "rauc"
-          MACHINE_FEATURES:append = " pcbios efi" 
-          EXTRA_IMAGEDEPENDS += "ovmf"
-          PREFERRED_RPROVIDER_virtual-grub-bootconf = "rauc-qemu-grubconf"
-          CORE_IMAGE_EXTRA_INSTALL += "rauc"
-          PACKAGECONFIG:remove:pn-rauc = "service"
-          RAUC_SLOT_rootfs[fstype] = "ext4"
-          RAUC_SLOT_rootfs[adaptive] = "block-hash-index"
-          RAUC_KEYRING_FILE="$GITHUB_WORKSPACE/rauc-ca/ca.cert.pem"
-          RAUC_KEY_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.key"
-          RAUC_CERT_FILE="$GITHUB_WORKSPACE/rauc-ca/dev.cert"
-          IMAGE_INSTALL:append = " myapp"
-          EOF
-
-#          cat conf/local.conf
-#          cat conf/bblayers.conf
       - name: Building
         id: build
         run: |
