@@ -75,7 +75,7 @@ jobs:
             cd ../..
           fi
           # custom wks file
-          cp ci-cd/rauc/qemux86-grub-efi.wks ${BRANCH}/meta-rauc-community/meta-rauc-qemux86/wic/qemux86-grub-efi.wks
+          # cp ci-cd/rauc/qemux86-grub-efi.wks ${BRANCH}/meta-rauc-community/meta-rauc-qemux86/wic/qemux86-grub-efi.wks
       
       - name: Extract RAUC keys
         run: |
@@ -86,6 +86,9 @@ jobs:
       
       - name: Configuring
         run: |
+
+          DEBIAN_FRONTEND=noninteractive apt-get install -y gettext-base
+          
           rm -f ${BRANCH}/build/conf/local.conf
           rm -f ${BRANCH}/build/conf/bblayers.conf
           . ./${BRANCH}/poky/oe-init-build-env ${BRANCH}/build
