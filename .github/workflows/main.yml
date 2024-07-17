@@ -111,10 +111,10 @@ jobs:
           bitbake -k core-image-minimal
           bitbake -k qemu-demo-bundle
 
-          image=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
-          bundle=$(readlink $GITHUB_WORKSPACE/tmp/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
-          echo "rauc_image=tmp/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
-          echo "rauc_bundle=tmp/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
+          image=$(readlink $GITHUB_WORKSPACE/tmp-glibc/deploy/images/qemu${ARCH}/core-image-minimal-qemu${ARCH}.wic)
+          bundle=$(readlink $GITHUB_WORKSPACE/tmp-glibc/deploy/images/qemu${ARCH}/qemu-demo-bundle-qemu${ARCH}.raucb)
+          echo "rauc_image=tmp-glibc/deploy/images/qemu${ARCH}/$image" >> "$GITHUB_OUTPUT"
+          echo "rauc_bundle=tmp-glibc/deploy/images/qemu${ARCH}/$bundle" >> "$GITHUB_OUTPUT"
           echo "rauc_bundle_filename=$bundle" >> "$GITHUB_OUTPUT"
 
       - name: Autenticate with qbee.io
