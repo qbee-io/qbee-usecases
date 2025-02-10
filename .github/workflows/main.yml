@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 600
     container:
       image: dynamicdevices/yocto-ci-build:latest
-      options: --privileged --platform linux/amd64  -v /dev/net/tun:/dev/net/tun -v /dev/kvm:/dev/kvm
+      options: --privileged --platform linux/amd64  -v /dev/net/tun:/dev/net/tun -v /dev/kvm:/dev/kvm --user 1001
     strategy:
       matrix:
         branch: [kirkstone]
